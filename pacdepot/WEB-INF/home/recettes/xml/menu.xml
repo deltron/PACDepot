@@ -1,0 +1,13 @@
+<menu>
+	<item width="15"/>  <!-- espace de 15 pixels au debut du menu -->
+	
+	<item href="/browse/category" label="Consulter" src="/images/consulter.gif"/>
+	<item href="/browse/index" label="Index" src="/images/index.gif"/>
+	<item href="/add" label="Ajouter" src="/images/ajouter.gif"/>
+	<item href="/search" label="Recherche" src="/images/recherche.gif"/>
+	
+	<item href="/members/list" label="Gestion" login="true"/>
+	<item href="/members/print" label="Imprimer" login="true"/>
+	<item href="/members/profile" label="Profile" login="true" group="administrator"/>
+	<item href="/members/logout" label="Sortie" login="true"/>
+</menu>

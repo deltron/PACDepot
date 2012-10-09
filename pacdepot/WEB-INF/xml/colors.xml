@@ -1,0 +1,15 @@
+   <colors background="#FFFFFF" text="#000000">
+      <menu background="#000099" text="#DDDDDD"/>
+      <section>
+         <title text="#CCCCCC" background="#000099"/>
+         <body text="#000000" background="#D6ECFC">
+            <link unvisited="#000099" visted="#000099"/>
+         </body>
+         <input background="#FFFFFF"/>
+      </section>
+      <searchResults>
+         <header text="#CCCCCC" background="#000099"/>
+         <body text="#000000" background="#FFFFFF"/>
+         <navigator text="#000000" background="#FFFFFF"/>
+      </searchResults>
+   </colors>

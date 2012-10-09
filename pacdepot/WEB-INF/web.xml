@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE web-app
+    PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+    "http://java.sun.com/dtd/web-app_2_3.dtd">
+
+<web-app>
+	<servlet>
+		<servlet-name>pacServlet</servlet-name>
+		<servlet-class>com.pacdepot.servlet.PacServlet</servlet-class>
+		<init-param>
+			<param-name>indexDir</param-name>
+			<param-value>c:/var/lucene</param-value>
+		</init-param>
+		<init-param>
+			<param-name>baseDir</param-name>
+			<param-value>c:/www/pacdepot/WEB-INF</param-value>
+		</init-param>
+		<init-param>
+			<param-name>indexGrammar</param-name>
+			<param-value>c:/www/pacdepot/WEB-INF/etc/french.trans</param-value>
+		</init-param>
+		<init-param>
+			<param-name>tempDir</param-name>
+			<param-value>c:/tmp</param-value>
+		</init-param>
+		<init-param>
+			<param-name>defaultSponsor</param-name>
+			<param-value>pacdepot</param-value>
+		</init-param>
+		<init-param>	
+			<param-name>jdbcDriverClassName</param-name>
+			<param-value>org.gjt.mm.mysql.Driver</param-value>
+		</init-param>
+		<init-param>
+			<param-name>databaseURL</param-name>
+			<param-value>jdbc:mysql://localhost:3306/pac?autoReconnect=true&amp;useUnicode=true&amp;characterEncoding=UTF-8</param-value>
+		</init-param>
+		<init-param>
+			<param-name>adapterClassName</param-name>
+			<param-value>com.pacdepot.database.JdbcDataAdapter</param-value>
+		</init-param>
+		<init-param>
+			<param-name>adminHost</param-name>
+			<param-value>localhost</param-value>
+		</init-param>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>pacServlet</servlet-name>
+		<url-pattern>/*</url-pattern>
+	</servlet-mapping>
+
+	<security-constraint>
+		<web-resource-collection>
+			<web-resource-name>
+				AdminModule
+			</web-resource-name>
+			<url-pattern>
+				/admin/*
+			</url-pattern>
+			<http-method>
+				GET
+			</http-method>
+			<http-method>
+				POST
+			</http-method>
+		</web-resource-collection>
+		<auth-constraint>
+			<role-name>
+				admin
+			</role-name>
+		</auth-constraint>
+	</security-constraint>
+
+	<login-config>
+		<auth-method>
+			BASIC
+		</auth-method>
+		<realm-name>
+			Default
+		</realm-name>
+	</login-config>
+
+	<security-role>
+		<role-name>
+			admin
+		</role-name>
+	</security-role>
+</web-app>

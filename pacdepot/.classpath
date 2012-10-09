@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+    <classpathentry kind="src" path="WEB-INF/src"/>
+    <classpathentry kind="var" path="JRE_LIB" rootpath="JRE_SRCROOT" sourcepath="JRE_SRC"/>
+    <classpathentry kind="lib" path="WEB-INF/lib/cos.jar"/>
+    <classpathentry kind="lib" path="WEB-INF/lib/jdbc2_0-stdext.jar"/>
+    <classpathentry kind="lib" path="WEB-INF/lib/jdom.jar"/>
+    <classpathentry kind="lib" path="WEB-INF/lib/jta-spec1_0_1.jar"/>
+    <classpathentry kind="lib" path="WEB-INF/lib/lucene-1.2.jar"/>
+    <classpathentry kind="lib" path="WEB-INF/lib/mm.mysql-2.0.14-bin.jar"/>
+    <classpathentry kind="lib" path="WEB-INF/lib/normalizer.jar"/>
+    <classpathentry kind="lib" path="C:/usr/Tomcat4.1.18/common/lib/servlet.jar"/>
+    <classpathentry kind="output" path="WEB-INF/classes"/>
+</classpath>

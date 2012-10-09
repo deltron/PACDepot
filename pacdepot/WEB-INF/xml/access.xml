@@ -1,0 +1,16 @@
+<access>
+	<section name="members">
+		<action name="updateBanner" group="administrator"/>
+	</section>
+
+	<!--
+  <section name="add">
+    <action name="add" group="administrator"/>
+    <action name="previewItem" group="administrator"/>
+    <action name="modifyItem" group="administrator"/>
+    <action name="confirmItem" group="administrator"/>
+    <action name="cancelItem" group="administrator"/>
+  </section>
+  -->
+	
+</access>

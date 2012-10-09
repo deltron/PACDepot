@@ -1,0 +1,16 @@
+<menu bgcolor="#FF0000" text="#FFFFFF">
+	<!-- example avec image -->
+	<!-- <item href="/browse/category" label="Consulter" src="/images/consulter.gif"/> -->
+	<item href="/" label="Accueil" width="100"/>
+	<item href="/browse/category" label="Consulter" width="100"/>
+	<item href="/browse/index" label="Index" width="100"/>
+	<item href="/add" label="Ajouter" width="100"/>
+	<item href="/search" label="Recherche" width="100"/>
+	
+	<item href="/members" label="Membres" width="100" login="false"/>
+
+	<item href="/members/list" label="Gestion" width="100" login="true"/>
+	<item href="/members/print" label="Imprimer" width="100" login="true"/>
+	<item href="/members/profile" label="Profile" width="100" login="true" group="administrator"/>
+	<item href="/members/logout" label="Sortie" width="100" login="true"/>
+</menu>

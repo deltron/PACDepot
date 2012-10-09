@@ -1,0 +1,17 @@
+<menu bgcolor="#525D76" selected="#202B44" text="#FFFFFF">
+	<item href="/browse/category" label="Consulter" width="100"/>
+	<item label=" | " width="33"/>
+	<item href="/browse/index" label="Index" width="100"/>
+	<item label=" | " width="33"/>
+	<item href="/search" label="Recherche" width="100"/>
+	<item label=" | " width="33" login="false"/>
+	<item href="/members" label="Membres" width="100" login="false"/>
+	<item label=" | " width="33" login="true"/>
+	<item href="/add" label="Ajouter" width="100" login="true" group="administrator"/>
+	<item label=" | " width="33" login="true"/>
+	<item href="/members/list" label="Gestion" width="100" login="true"/>
+	<item label=" | " width="33" login="true"/>
+	<item href="/members/profile" label="Profile" width="100" login="true" group="administrator"/>
+	<item label=" | " width="33" login="true"/>
+	<item href="/members/logout" label="Sortie" width="100" login="true"/>
+</menu>

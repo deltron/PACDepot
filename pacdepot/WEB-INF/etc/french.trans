@@ -1,0 +1,325 @@
+//
+// French language simplifier
+// (c) Rodrigo Reyes 2002 reyes@charabia.net
+//
+// Version 1.0
+//
+// This (kind-of) transducer applies the following transformations:
+//
+//  * FIRST PASS:
+//        
+//      - Convert everything into lowercase
+//      - Remove all the french diacritics
+// 
+//  * SECOND PASS:
+//
+//      - Simplify the sophisticated compositions of letters that
+//        the french language has. For example:
+//            ain/ein/in/un		-> 1
+//            ont/on			-> ô
+//            en/an			-> ã
+//            é/è/ê/ai/ait/ais/aient	-> e
+//
+//      - Also do some very simple stemming by removing the verbal
+//        suffixes, some nouns suffixes that are likely to have
+//        their stem shared with something else (often a verb).
+//
+//      - Turn some suffixes into normal form. For example, -aux into
+//        -al, -euse or -trice into -er, etc. This is better than
+//        removing, because it does not remove significant morphemes
+//        when the simplification is abusive (for example "taux" is 
+//        turned to "tal" instead of "t", or "gueuse" into "gueur"
+//        instead of "g". 
+//        This "simplification" normalization strategy (w.r.t. stemming)
+//        has the main advantage that it rarely turns the normal form 
+//        into something unusable, while providing all the advantages
+//        of stemming when algorithmic normalization works.
+//
+//   * THIRD PASS:
+//
+//      - remove all letter duplicates. Those duplicates can't be removed at
+//        an earlier stage, as some rules rely on letters duplication 
+//        ('s' vs. 'ss', namely)
+//
+// --------------- FIRST PASS ---------------
+//
+
+// #start indicates the start of a new pass, and
+// therefore creates a new transducer.
+#start
+
+// First, initiate the processing by lower-casing the word
+// and removing all the diacritics
+#option tolowercase = true
+
+:: à :: 	> a
+:: â ::  	> a
+:: ä :: 	> a
+:: ã :: 	> a
+:: é :: 	> e
+:: ê :: 	> e
+:: è :: 	> e
+:: ë :: 	> e
+:: î :: 	> i
+:: ï :: 	> i
+:: û :: 	> u  
+:: ù :: 	> u
+:: ü :: 	> u
+:: ç ::		> c  // Shall we change it to "ss" ? not that sure.
+
+
+//
+// --------------- SECOND PASS ---------------
+//
+//
+// Here we operate a lot of simplifications. 
+//
+
+#start
+
+
+//
+//  Verbs stemming. We apply the suffix removal first, because they are more specific.
+//
+// Misc. other morphological parts
+//
+// -er verbs suffixes
+:: er :: $ > 
+:: ons :: $ > 
+:: ez :: $ > 
+:: ent :: $ > 
+:: ait :: $ > 
+:: ions :: $ >
+:: iez :: $ > 
+:: aient :: $ > 
+:: ames :: $ > 
+:: ates :: $ > 
+:: erent :: $ > 
+:: erais :: $ > 
+:: erai :: $ > 
+:: eras :: $ > 
+:: era :: $ > 
+:: eront :: $ > 
+:: erons :: $ > 
+:: asses :: $ > 
+:: asse :: $ > 
+:: at :: $ > 
+:: assions :: $ > 
+:: assiez :: $ > 
+:: assent :: $ > 
+:: erait :: $ > 
+:: eriont :: $ > 
+:: eriez :: $ > 
+:: eraient :: $ > 
+:: e :: $ > 
+~$[lscmthfv]:: a :: $ >
+
+:: endre :: $ > ã
+:: endrai[st] :: $ > ã
+:: endrai :: $ > ã
+:: endron[ts] :: $ > ã
+:: endrez :: $ > ã
+
+{length-greater-than 7} :: issons :: $ 		>
+{length-greater-than 9} :: issions :: $ 	>
+{length-greater-than 7} :: issais :: $ 		>
+{length-greater-than 7} :: issait :: $ 		>
+{length-greater-than 6} :: issai :: $		>
+{length-greater-than 7} :: issant :: $		>
+{length-greater-than 7} :: isses :: $		>
+~$ :: irai :: $ 		>
+~$ :: irait :: $		>
+~$ :: iraient :: $ 	 	>
+~$ :: irais :: $ 		>
+~$ :: iront :: $ 		>
+~$ :: irons :: $ 		>
+
+:: ir :: $ 	>
+:: eoir :: $ 	>
+:: eoire :: $ 	>
+:: oir :: $ 	>
+:: oire :: $ 	>
+
+:: oit :: $ 	>
+:: oient :: $ 	>
+
+
+ //
+ //  Remove common noun suffixes. This does some stemming on the
+ //  input form.
+ //
+:: inage :: $ > 1	// "copinage" > "cop1"
+:: inages :: $ > 1 	// "copinages" > "cop1"
+{length-greater-than 5} :: age :: $ >  // "habillage" > "habill"
+{length-greater-than 6} :: ages :: $ >  // "habillages" > "habill"
+
+{ length-greater-than 6 } :: ation :: $ >  // "déclaration" > "déclar", not "nation"
+{ length-greater-than 7 } :: ations :: $ > // "déclarations" > "déclar"
+
+og :: ie :: $ > 	// "philologie" -> "philolog"
+og :: ies :: $ > 	// "philologies" -> "philolog"
+og :: ue :: $ >		// "philologue" -> "philolog"
+og :: ues :: $ >	// "philologues" -> "philolog"
+
+:: ement :: $ 	>     // "déchirement" -> "déchir", "ajustement" -> "ajust"
+:: ements :: $ 	>    
+:: ment :: $ 	> mã
+
+:: trice :: $ > ter  // "fédératrice" -> "fédérater"
+:: trices :: $ > ter  // "fédératrice" -> "fédérater"
+:: teuses :: $ > ter  // "flatteuse" -> "flatteur"
+:: teuse :: $ > ter  // "flatteuse" -> "flatteur"
+:: erie :: $ >       // "duperie" -> "dup", "tromperie" -> "tromp"
+:: eries :: $ >       // "duperie" -> "dup", "tromperie" -> "tromp"
+:: euse :: $ > er    // "tueuse" -> "tuer"
+:: euses :: $ > er   // "tueuses" -> "tuer"
+
+:: ution :: $	> u  // "pollution", "attribution" ! produces a "u", because "uer"$ is not removed (but "er"$ is).
+:: utions :: $	> u
+
+:: ence :: $ 	> ã	// "prudence" -> "prudã"
+:: ences :: $ 	> ã	// "prudences" -> "prudã"
+:: ance :: $ 	> ã	// "tolérance" -> "tolérã"
+:: ances :: $ 	> ã	// "ambiances" -> "ambiã"
+:: anse :: $	> ã	
+:: anses :: $	> ã	
+
+al :: ite :: $ 		> 	// "anormalite" -> "anormal"
+al :: ites :: $ 	> 	// "anormalite" -> "anormal"
+
+:: amment :: $ 		> ã 	// "méchamment" -> "méchã"
+
+//
+// not processed:
+// * usion$ : not an interesting simplification, as there are not 
+//     enough nominal cases. i.e. "diffusion", but "illusion", 
+//    "exclusion", "contusion", etc.
+
+
+:: ive :: $ > if
+:: ives	:: $ > if    // "consécutives"
+
+ :: iste :: $ 		> isme
+ :: istes :: $		> isme		// "intégristes" -> "intégrisme"
+ :: able :: $ 		> 	// "chiffrable" -> "chiffr"
+ :: ables :: $ 		> 	// "chiffrable" -> "chiffr"
+
+[~ae] :: ine :: $ 	> 1 	// "citadine"->"citadin"
+[~ae] :: ines :: $ 	> 1	// 
+
+
+ //
+ //  Now we process all the infix removal
+ //  
+
+
+ // Process the a letter
+
+ :: ain :: [~aeiouymn]		> 1
+ :: ai :: 			> e
+ :: am :: [~aeiouymn] 		> ã
+ :: ais :: $			> e
+ :: aill :: 			> ai
+ :: ail :: $			> ai  
+ :: ails :: $			> ai  
+ :: aux :: $			> al
+ :: au :: $ 			> al
+ :: au :: 			> o
+ :: antes :: $ 			> ã
+ :: ante :: $ 			> ã
+ :: an[dtg]s :: $		> ã
+ :: an[dtsg] :: $		> ã
+ :: an :: [~aeiouymn]		> ã
+
+ // Process the e letter
+ // The e letter is probably the most complicated of all
+
+ :: ein :: [~aeiouymn]		> 1
+ :: ei ::  			> e
+ i :: ent :: $			> e
+ :: ent :: $			> ã
+ i :: end :: $			> 1  // like in "entretiendra", "soutiendra"  
+ :: end :: $			> ã  // like in "prend", "fend"
+ i :: en :: [~aeiouymn]		> 1  // "norvégien", "rien"
+ :: en :: [~aeiouymn]		> ã
+ :: eu :: 			> e // "pleurer", "bleu"
+
+ :: ets :: $			> e // "violets", "triplets"
+ :: et :: $			> e 
+ :: es :: $			>
+
+ :: eaux :: $ 			> o	// "oiseaux", "tableaux", "chapeaux", etc.
+ :: eau :: 			> o
+
+ :: e :: o			>     // like in surseoir
+ :: e :: $			>     // remove the ending e
+
+ // Process the i letter
+
+ :: ier :: $ 		>
+ :: iers :: $ 		>
+ :: iere :: $ 		>
+ :: ieres :: $ 		>
+ :: in :: [~aeiouymn]	> 1
+ :: ill :: 		> i
+
+ // Process the o letter
+
+ :: ont :: [~raeiouyh]	> ô
+ :: ons :: [~aeiouyh] 	> ô
+ :: ond :: [~aeiouyh]	> ô
+ :: on :: [~aeiouymn]  	> ô
+ :: oin :: [~aeiouymn]	> ou1
+ :: oeu :: 		> e
+ :: oeud :: $		> e 
+ :: oe :: 		> e
+
+ // Process the u letter
+
+ :: un :: [~aeiouymn]		> 1
+ :: u[st] :: $ 			> u  // "résidus", "crut"
+
+ // Process the y letter
+
+ :: yer :: $ 				>     // "ennuyer", "appuyer"
+[~aeiouy] :: ym :: [~aeiouy]		> 1   // "symbole", "nymphe", "sympa"
+[~aeiouy] :: yn :: [~aeiouynm]		> 1   // "syndicat", "synchro"
+[aeiouy] :: y :: [aeiouy]		> i   // "payer"
+[~aeiouy] :: y :: 			> i   // "dynamite"
+ :: y :: 				> i
+
+// Remove the terminal s of plural
+
+:: s :: $ 	>
+
+:: ch :: 	> ch
+:: sh :: 	> ch
+:: sch :: 	> ch
+:: h :: 	>
+
+:: gu :: [aoy] 	> g
+:: ge :: [~r]	> j
+:: g :: [iy] 	> j
+
+:: ph :: 	> f
+:: t :: ion 	> s
+
+:: qu :: 	> k
+:: q :: 	> k
+:: c :: [auorlt]	> k
+:: c :: c	>    // remove duplicate c
+
+:: x :: $ 	>
+
+[aeiou] :: s :: [aeiou]	> z
+
+:: ô :: 	> o
+
+
+//
+// --------------- THIRD PASS ---------------
+//
+
+#start
+#option uniquify-all=true
+
